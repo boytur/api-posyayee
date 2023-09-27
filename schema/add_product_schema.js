@@ -13,7 +13,7 @@
 const mongoose = require('mongoose');
 
 // สร้าง schema
-const add_product_no_qr = mongoose.Schema({
+const add_product = mongoose.Schema({
   name:{
     type:String,
     required:true,
@@ -27,11 +27,15 @@ const add_product_no_qr = mongoose.Schema({
     type:Number,
     required:true
   },
+  barcode:{
+    type:String,
+    default:null
+  },
   volume:{
     type:Number,
-    required:true
+    default:-1
   }
 },{timestamps:true});
 
 // สร้าง model จาก schema
-module.exports = mongoose.model("AddProductNoQr",add_product_no_qr,"ProductsNoQr");//(ฟังก์ชัน ,ตาราง ,ชื่อในdatabase)
+module.exports = mongoose.model("AddProduct",add_product,"Products");//(ฟังก์ชัน ,ตาราง ,ชื่อในdatabase)

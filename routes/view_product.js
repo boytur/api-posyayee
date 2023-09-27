@@ -8,13 +8,13 @@
 
 const express = require('express');
 const router = express.Router();
-const {view_product_no_qr} = require('../controller/con_view_pr_no_qr')
+const {view_product} = require('../controller/con_view_product');
 
 /* สร้าง route สำหรับ /view-product-no-qr
    และเรียกใช้ controller con_view_pr_no_qr 
    เพื่อใช้งานการดูสินค้าที่ไม่มี barcode
 */
 
-router.get('/view-product-no-qr', view_product_no_qr)
+router.get('/view-product', view_product)
 //export router ไปใช้
 module.exports = router;

@@ -14,19 +14,20 @@ app.use(bodyParser.json()); //เก็บข้อมูลจาก body
 
 
 // Import route files
-const view_product_no_qr = require('./routes/view_product_no_qr');
-const add_product_no_qr = require('./routes/add_product_no_qr');
-
+const view_product= require('./routes/view_product');
+const add_product = require('./routes/add_product');
+const view_outstock_product = require('./routes/view_outstock_product');
 
 //get routes
-app.get('/', (req, res, next) => {
+app.get('/', (_req, res, _next) => {
   res.send('Response form Home เด๊อจ่ะ');
 })
-//Route product no qr
-app.get('/view-product-no-qr', view_product_no_qr);
-//Route add product no qr
-app.post ('/add-product-no-qr',add_product_no_qr)
-
+//Route view product
+app.get('/view-product', view_product);
+//Route add product
+app.post ('/add-product',add_product)
+//Route add view product outstock
+app.get ('/view-outstock-product',view_outstock_product);
 
 //Cnnect database
 __DATABASE__();

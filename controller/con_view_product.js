@@ -5,11 +5,11 @@
   DATE : 27/กันยายน/2023
   OWNER : piyawat W. 
  */
-const AddProductNoQr = require("../schema/add_product_no_qr_schema");
-exports.view_product_no_qr = async (req, res) => {
+const AddProduct = require("../schema/add_product_schema");
+exports.view_product = async (req, res) => {
   try {
     // Query the database to retrieve products without a barcode
-    const productsWithoutQR = await AddProductNoQr.find({});
+    const productsWithoutQR = await AddProduct.find({});
 
     // Return the list of products as a JSON response
     res.json({ products: productsWithoutQR });

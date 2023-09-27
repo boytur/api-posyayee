@@ -53,7 +53,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             const productList = document.getElementById("product-list");
             // Fetch data from the API
-            fetch("http://localhost:5500/view-product-no-qr")
+            fetch("http://localhost:5500/view-product")
                 .then((response) => response.json())
                 .then((data) => {
                     // Iterate through the products and create product cards
