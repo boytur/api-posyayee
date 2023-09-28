@@ -3,9 +3,9 @@
   name: ชื่อของสินค้า (String)
   image: ชื่อไฟล์รูปภาพของสินค้า (String)
   price: ราคาของสินค้า (Double)
+  barcode: บาร์โค้ดสินค้า
   volume: ปริมาณของสินค้า (Number)
   dateAdded: วันที่เพิ่มสินค้า (Date) ที่กำหนดค่าเริ่มต้นเป็นวันที่ปัจจุบัน.
-
   DATE : 27/กันยายน/2023
   OWNER : piyawat W. 
  */
@@ -21,7 +21,7 @@ const add_product = mongoose.Schema({
   },
   image:{
     type:String,
-    default:"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.istockphoto.com%2Fillustrations%2Fplaceholder-image&psig=AOvVaw33j60GE0bSQiB2duaI1FK9&ust=1695886181383000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCIDpq72iyoEDFQAAAAAdAAAAABAQ"
+    default:"https://placehold.co/600x400"
   },
   price:{
     type:Number,

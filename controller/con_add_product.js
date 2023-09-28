@@ -1,13 +1,12 @@
 /*
- เมื่อมี req มาจาก routes add-products-no-qr 
+ เมื่อมี req มาจาก routes add-products
  ให้เพิ่มข้อมูลลงใน database ผ่านโครงสร้าง schema
   DATE : 27/กันยายน/2023
   OWNER : piyawat W. 
 */
 
-//Model add_product_no_qr_schema
+//Model add_product_schema
 const AddProduct = require("../schema/add_product_schema");
-const db = require('../db/db');
 exports.add_product = async (req, res) => {
   const { name, image, price, volume ,barcode} = req.body;
   //validate ข้อมูลก่อนส่ง database

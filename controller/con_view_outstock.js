@@ -4,7 +4,7 @@
  
   DATE : 28/กันยายน/2023
   OWNER : piyawat W. 
- */
+*/
 
 const product_structure = require("../schema/add_product_schema");
 
@@ -21,7 +21,7 @@ exports.view_outstock_product = async (req, res) => {
     // Return the filtered list of products as a JSON response
     res.json({ products: filteredProducts });
   } catch (error) {
-    console.error("Error fetching products without QR:", error);
+    console.error("Error fetching products ", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

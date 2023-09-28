@@ -1,7 +1,6 @@
 /*
   สร้าง Routes เพื่อนำทางไปดูสินค้าที่ใกล้หมด
   ที่ controller con_view_pr_no_qr 
-  
   DATE : 28/กันยายน/2023
   OWNER : piyawat W. 
 */

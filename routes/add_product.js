@@ -1,10 +1,10 @@
 /*
-  สร้าง Routes เพื่อนำทางไปเพิ่มสินค้าที่ไม่มีบาร์โค้ดที่ database
+  สร้าง Routes เพื่อนำทางไปเพิ่มสินค้าที่ database
   
   DATE : 27/กันยายน/2023
   OWNER : piyawat W. 
  */
-// add_product.js
+
 
 const express = require('express');
 const router = express.Router();
