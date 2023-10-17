@@ -21,7 +21,7 @@ exports.view_outstock_product = async (req, res) => {
     // Return the filtered list of products as a JSON response
     res.json({ products: filteredProducts });
   } catch (error) {
-    console.error("Error fetching products ", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("เกิดข้อผิดพลาดที่เซิร์ฟเวอร์ ", error);
+    res.status(500).json({ error: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์" });
   }
 };

@@ -8,6 +8,7 @@
 /*เพื่อแปลง _id ที่รับมาเป็น String จาก user ให้เป็น Objet เพราะ MongoDB
     ซัพพอร์ตแค่ Object
 */
+
 const { ObjectId } = require('mongodb');
 const EditProduct = require("../schema/add_product_schema");
 
@@ -16,19 +17,14 @@ exports.edit_product = async (req, res) => {
 
   //validate ข้อมูลก่อนส่งแก้ไข
   switch (true) {
+    case !_id:
+      return res.status(400).json({
+        error: "เกิดข้อผิดพลาดกับสินค้าไอดีนี้",
+      });
+      break;
     case !name:
       return res.status(400).json({
-        error: "Plase input name !",
-      });
-      break;
-    case !price:
-      return res.status(400).json({
-        error: "Plase input image !",
-      });
-      break;
-    case !volume:
-      return res.status(400).json({
-        error: "Plase input volume !",
+        error: "กรุณาใส่ชื่อสินค้า",
       });
       break;
   }
@@ -37,7 +33,7 @@ exports.edit_product = async (req, res) => {
   const existingProduct = await EditProduct.findOne({ name: name });
   if (existingProduct) {
     return res.status(400).json({
-      error: "Product with the same [NAME] already exists",
+      error: "สินค้าชื่อนี้มีอยู่ในคลังแล้ว",
     });
   } else {
 
@@ -56,7 +52,7 @@ exports.edit_product = async (req, res) => {
 
       if (!updatedProduct) {
         return res.status(404).json({
-          error: "Product not found.",
+          error: "ไม่เจอสินค้า",
         });
       }
 
@@ -64,7 +60,7 @@ exports.edit_product = async (req, res) => {
     } catch (err) {
       console.error(err);
       res.status(500).json({
-        error: "Internal server error",
+        error: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์",
       });
     }
   }

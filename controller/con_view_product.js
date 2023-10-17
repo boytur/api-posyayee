@@ -14,7 +14,7 @@ exports.view_product = async (req, res) => {
     // Return the list of products as a JSON response
     res.json({ products: productsWithoutQR });
   } catch (error) {
-    console.error("Error fetching products without QR:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("เกิดข้อผิดพลาดที่เซิร์ฟเวอร์", error);
+    res.status(500).json({ error: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์" });
   }
 };

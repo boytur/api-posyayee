@@ -11,23 +11,24 @@
 */
 
 const DeleteProduct = require("../schema/add_product_schema");
-
+// delete_product
 exports.delete_product = async (req, res) => {
-    const {_id} = req.body;
-    if (!_id){
-        res.status(400).json({"message": "Invalid Product"})
-    }
+  const _id = req.params._id; // รับ _id จาก params
+  console.log(_id);
+  if (!_id) {
+    res.status(400).json({ message: "ไม่มีสินค้านี้อยู่" });
+    console.log("Not found");
+  }
   try {
     // ลบข้อมูลใน MongoDB โดยใช้ _id
     const result = await DeleteProduct.deleteOne({ _id: _id });
 
     if (result.deletedCount === 1) {
-      res.status(200).json({ message: 'Products deleted' });
+      return res.status(200).json({ message: 'สินค้าถูกลบแล้ว' });
     } else {
-      res.status(404).json({ message: `Not found product _id : ${_id}` });
+      return res.status(404).json({ message: `ไม่เจอสินค้าไอดีนี้ : ${_id}` });
     }
   } catch (error) {
     console.error('เกิดข้อผิดพลาดในการลบข้อมูล:', error);
-    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลบข้อมูล' });
   }
 };

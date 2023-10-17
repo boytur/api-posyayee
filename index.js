@@ -9,8 +9,8 @@ const bodyParser = require('body-parser');
 
 //middleware
 app.use(morgan('dev'));
-app.use(cors());
 app.use(bodyParser.json()); //เก็บข้อมูลจาก body
+app.use(cors());
 
 
 // Import route files
@@ -32,8 +32,8 @@ app.post ('/add-product',add_product)
 app.get ('/view-outstock-product',view_outstock_product);
 //Route edit product
 app.post ('/edit-product',edit_product)
-//Route delete product
-app.delete('/delete-product',delete_product);
+//Route delete product และส่ง para เป็น _id
+app.delete('/delete-product/:_id', delete_product);
 //Cnnect database
 __DATABASE__();
 

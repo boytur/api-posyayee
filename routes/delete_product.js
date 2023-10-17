@@ -10,6 +10,6 @@ const express = require('express');
 const router = express.Router();
 const {delete_product} = require('../controller/con_delete_product');
 
-router.delete('/delete-product',delete_product)
+router.delete('/delete-product/:_id',delete_product)
 
 module.exports = router;
