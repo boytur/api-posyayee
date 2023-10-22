@@ -25,7 +25,7 @@ const add_product = mongoose.Schema({
   },
   price:{
     type:Number,
-    required:true
+    required:null
   },
   barcode:{
     type:String,

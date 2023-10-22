@@ -13,12 +13,12 @@ exports.add_product = async (req, res) => {
   switch (true) {
     case !name:
       return res.status(400).json({
-        error: "Please input name",
+        error: "กรุณาใส่ชื่อสินค้า",
       });
       break;
     case !price:
       return res.status(400).json({
-        error: "Please input price",
+        error: "กรุณาใส่ราคาสินค้า",
       });
       break;
   }
@@ -32,32 +32,36 @@ exports.add_product = async (req, res) => {
       volume: volume,
       barcode: barcode,
     });
-    console.log(barcode);
     //หาว่ามีชื่อซํ้าไหม
     const existingProduct = await AddProduct.findOne({ name: name });
     //หาว่า barcode ซํ้าไหม
     if (existingProduct) {
       return res.status(400).json({
-        error: "Product with the same [name] already exists",
+        error: "สินชื่อค้านี้มีอยู่แล้ว",
       });
     }
     //ถ้า ป้อนบาร์โค้ดมา (ไม่เป็น undefined) ให้ไปหาบาร์โค้ดใน database
-    if (barcode !== undefined) {
+    if (barcode !== undefined && barcode.length !== 13 && barcode != '') {
+      // ดำเนินการเฉพาะเมื่อ barcode ไม่เป็น undefined และความยาวไม่เท่ากับ 13
       const existingBarcodeProduct = await AddProduct.findOne({
         barcode: barcode,
       });
       if (existingBarcodeProduct) {
         return res.status(400).json({
-          error: "Product with the same [barcode] already exists",
+          error: "สินค้าบาร์โค้ดนี้มีอยู่แล้ว",
         });
       }
     }
+    if (volume === null || parseInt(volume) <= 0) {
+      volume = -1;
+      return res.status(400).json({
+        error: "กรุณาใส่จำนวนที่ถูกต้อง",
+      });
+    }
     // validate เสร็จเซฟลง database
     const savedProduct = await newProduct.save();
-    console.log("Product added successfully:", savedProduct);
-    res.json({ message: "Product added successfully", product: savedProduct });
+    res.json({ message: `${name} ถูกเพิ่มแล้ว`, product: savedProduct });
   } catch (error) {
-    console.error("Error adding product:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์กรุณาลองใหม่อีกครั้ง" });
   }
 };

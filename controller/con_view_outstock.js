@@ -15,7 +15,7 @@ exports.view_outstock_product = async (req, res) => {
 
     // Filter products with volume greater than or equal to 0 and less than 5
     const filteredProducts = products.filter((product) => {
-      return product.volume !== -1 && product.volume < 5;
+      return product.volume !== -1 && product.volume !== null && product.volume < 5;
     });
 
     // Return the filtered list of products as a JSON response
