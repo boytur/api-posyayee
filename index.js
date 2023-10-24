@@ -19,6 +19,7 @@ const add_product = require('./routes/add_product');
 const view_outstock_product = require('./routes/view_outstock_product');
 const edit_product = require('./routes/edit_product');
 const delete_product = require('./routes/delete_product')
+const register = require('./routes/register');
 
 //get routes
 app.get('/', (_req, res, _next) => {
@@ -34,6 +35,9 @@ app.get ('/view-outstock-product',view_outstock_product);
 app.post ('/edit-product',edit_product)
 //Route delete product และส่ง para เป็น _id
 app.delete('/delete-product/:_id', delete_product);
+//Route register
+app.post('/register', register);
+
 //Cnnect database
 __DATABASE__();
 
