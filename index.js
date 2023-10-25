@@ -19,14 +19,15 @@ const add_product = require('./routes/add_product');
 const view_outstock_product = require('./routes/view_outstock_product');
 const edit_product = require('./routes/edit_product');
 const delete_product = require('./routes/delete_product')
-const register = require('./routes/register');
+const register = require('./routes/register_route');
+const login_route = require('./routes/login_route');
 
 //get routes
 app.get('/', (_req, res, _next) => {
   res.send('Response form Home เด๊อจ่ะ');
 })
 //Route view product
-app.get('/view-product', view_product);
+app.get('/view-product',view_product);
 //Route add product
 app.post ('/add-product',add_product)
 //Route view product outstock
@@ -37,6 +38,8 @@ app.post ('/edit-product',edit_product)
 app.delete('/delete-product/:_id', delete_product);
 //Route register
 app.post('/register', register);
+//Route login
+app.post('/login', login_route);
 
 //Cnnect database
 __DATABASE__();
