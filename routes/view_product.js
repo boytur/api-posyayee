@@ -5,7 +5,6 @@
   DATE : 27/กันยายน/2023
   OWNER : piyawat W. 
  */
-  const authMiddleware = require('../auth/authMiddleware');
 const express = require("express");
 const router = express.Router();
 const { view_product } = require("../controller/con_view_product");
