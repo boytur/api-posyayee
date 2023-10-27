@@ -12,7 +12,7 @@ exports.con_login = async (req, res) => {
 
     //ถ้าไม่มี
     if (!user) {
-      return res.status(401).json({ error: "ผู้ใช้ไม่พบ" });
+      return res.status(401).json({ error: "ไม่พบผู้ใช้นี้" });
     }
 
     //ถอดรหัสผ่าน

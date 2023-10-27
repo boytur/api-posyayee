@@ -21,6 +21,8 @@ const edit_product = require('./routes/edit_product');
 const delete_product = require('./routes/delete_product')
 const register = require('./routes/register_route');
 const login_route = require('./routes/login_route');
+const sale = require('./routes/sale_route');
+const dailysale = require('./routes/view_dailysale');
 
 //get routes
 app.get('/', (_req, res, _next) => {
@@ -40,6 +42,10 @@ app.delete('/delete-product/:_id', delete_product);
 app.post('/register', register);
 //Route login
 app.post('/login', login_route);
+//Route sale
+app.post('/sale', sale);
+//Route dailysale
+app.get('/view-dailysale',dailysale);
 
 //Cnnect database
 __DATABASE__();

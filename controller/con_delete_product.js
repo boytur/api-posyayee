@@ -14,7 +14,6 @@ const DeleteProduct = require("../schema/add_product_schema");
 // delete_product
 exports.delete_product = async (req, res) => {
   const _id = req.params._id; // รับ _id จาก params
-  console.log(_id);
   if (!_id) {
     res.status(400).json({ message: "ไม่มีสินค้านี้อยู่" });
     console.log("Not found");
