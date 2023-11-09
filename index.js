@@ -6,12 +6,13 @@ const morgan = require('morgan')
 const __PORT__ = process.env.PORT;
 const __DATABASE__ = require('./db/db');
 const bodyParser = require('body-parser');
+const lineNotify  = require('./notify/notify');
 
 //middleware
 app.use(morgan('dev'));
 app.use(bodyParser.json()); //เก็บข้อมูลจาก body
 app.use(cors());
-
+app.use(express.json());
 
 // Import route files
 const view_product= require('./routes/view_product');
@@ -54,3 +55,10 @@ __DATABASE__();
 app.listen(__PORT__, () => {
   console.log(`App listening on port ${__PORT__}`)
 })
+//ส่งแจ้งเตือนทุก 2 ทุ่ม
+const cron = require('node-cron');
+// สร้าง cron job เพื่อตรวจสอบทุกวันที่ 20:00
+cron.schedule('0 20 * * *', () => {
+  console.log('Cron job is running...');
+  lineNotify(); // เรียกฟังก์ชันส่ง Line Notify ที่คุณสร้าง
+});

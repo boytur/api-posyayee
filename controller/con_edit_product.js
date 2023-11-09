@@ -27,6 +27,11 @@ exports.edit_product = async (req, res) => {
         error: "กรุณาใส่ชื่อสินค้า",
       });
       break;
+    case volume <= -1 || price <= 0:
+        return res.status(400).json({
+          error: "อย่าใส่ค่าติดลบมาโว้ยยยลำบากมาเขียน validate เนี่ย",
+    });
+      break;
   }
   
   //หาว่ามีชื่อซํ้าไหม

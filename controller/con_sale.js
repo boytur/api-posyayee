@@ -1,52 +1,61 @@
-const product = require('../schema/add_product_schema');
-const dailySales = require('../schema/daily_sales_shema');
+const Product = require('../schema/add_product_schema');
+const DailySale = require('../schema/daily_sales_shema');
 
 exports.con_sale = async (req, res) => {
-  const _id = req.query._id; // รับ _id จากพารามิเตอร์
-  const quantity = req.query.quantity; // รับปริมาณจากพารามิเตอร์
-
   try {
-    // ค้นหาราคาของสินค้าจาก _id
-    const productData = await product.findById(_id);
+    const { products } = req.body;
 
-    if (!productData) {
-      return res.status(404).json({ error: 'สินค้าไม่พบ' });
-    }
-
-    // คำนวณยอดขายจากราคาของสินค้าและปริมาณ
-    const salesAmount = productData.price * quantity;
-
-    // ดึงวันที่ปัจจุบัน
     const currentDate = new Date();
-    // สกัดเฉพาะข้อมูลวันที่ในรูปแบบ ISODate
     const dateOnly = currentDate.toISOString().split('T')[0];
 
-    // ค้นหายอดขายในวันที่นี้
-    const existingDailySale = await dailySales.findOne({ date: dateOnly });
+    let totalPrice = 0;
+    let productUpdatePromises = [];
 
-    if (existingDailySale) {
-      // ถ้ามียอดขายในวันเดียวกัน ให้บวกเข้ายอดขายเดิม
-      existingDailySale.salesAmount += salesAmount;
-      await existingDailySale.save();
-    } else {
-      // ไม่มียอดขายในวันเดียวกัน สร้างและบันทึกข้อมูลยอดขายในแต่ละวันใหม่
-      const newDailySale = new dailySales({
-        date: dateOnly, // เปลี่ยนรูปแบบวันที่เป็น ISODate
-        salesAmount: salesAmount, // ยอดขายในวันนี้
-      });
-      await newDailySale.save();
+    for (const product of products) {
+      const result = await Product.findOne({ _id: product._id });
+
+      if (!result) {
+        return res.status(400).json({ message: 'ไม่พบสินค้า' });
+      }
+
+      if (result.volume <= 0 && result.volume !== null) {
+        return res.status(400).json({ message: `${result.name} หมดสต็อกแล้ว!` });
+      }
+
+      const productPrice = result.price * product.quantity;
+      totalPrice += productPrice;
+
+      if (result.volume !== null) {
+        productUpdatePromises.push(
+          Product.updateOne(
+            { _id: product._id },
+            {
+              $inc: { volume: -product.quantity },
+              $currentDate: { lastUpdated: false },
+            }
+          )
+        );
+      }
+
+      const existingDailySale = await DailySale.findOne({ date: dateOnly });
+
+      if (existingDailySale) {
+        existingDailySale.salesAmount += productPrice;
+        await existingDailySale.save();
+      } else {
+        const newDailySale = new DailySale({
+          date: dateOnly,
+          salesAmount: productPrice,
+        });
+        await newDailySale.save();
+      }
     }
 
-    // ลดปริมาณของสินค้าตามปริมาณที่ระบุ
-    await product.findByIdAndUpdate(_id, {
-      $inc: { volume: -quantity },
-      $currentDate: { lastUpdated: true },
-    });
+    await Promise.all(productUpdatePromises);
 
-    console.log('ตอบกลับจากเส้นทางการขาย');
     res.status(200).json({ message: 'การขายเสร็จสมบูรณ์' });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ error: 'ข้อผิดพลาดบนเซิร์ฟเวอร์' });
   }
 };
