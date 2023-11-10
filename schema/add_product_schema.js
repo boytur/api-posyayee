@@ -33,7 +33,7 @@ const add_product = mongoose.Schema({
   },
   volume:{
     type:Number,
-    default:-1
+    default:null
   }
 },{timestamps:true});
 

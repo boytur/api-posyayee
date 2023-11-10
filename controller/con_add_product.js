@@ -41,7 +41,7 @@ exports.add_product = async (req, res) => {
       });
     }
     //ถ้า ป้อนบาร์โค้ดมา (ไม่เป็น undefined) ให้ไปหาบาร์โค้ดใน database
-    if (barcode !== undefined && barcode.length !== 13 && barcode != '') {
+    if (barcode != '') {
       // ดำเนินการเฉพาะเมื่อ barcode ไม่เป็น undefined และความยาวไม่เท่ากับ 13
       const existingBarcodeProduct = await AddProduct.findOne({
         barcode: barcode,
@@ -53,7 +53,7 @@ exports.add_product = async (req, res) => {
       }
     }
     if (volume === null || parseInt(volume) <= 0) {
-      volume = -1;
+      volume = null;
       return res.status(400).json({
         error: "กรุณาใส่จำนวนที่ถูกต้อง",
       });
