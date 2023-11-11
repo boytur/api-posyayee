@@ -17,11 +17,6 @@ exports.con_sale = async (req, res) => {
       if (!result) {
         return res.status(400).json({ message: 'ไม่พบสินค้า' });
       }
-
-      if (result.volume <= 0 && result.volume !== null) {
-        return res.status(400).json({ message: `${result.name} หมดสต็อกแล้ว!` });
-      }
-
       const productPrice = result.price * product.quantity;
       totalPrice += productPrice;
 

@@ -8,8 +8,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { add_product} = require('../controller/con_add_product'); // Import the controller function
+const { add_new_product} = require('../controller/con_add_new_product'); // Import the controller function
 
-router.post('/add-product', add_product);
+router.post('/add-product', add_new_product);
 
 module.exports = router;
