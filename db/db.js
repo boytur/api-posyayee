@@ -11,7 +11,7 @@ require("dotenv").config();
 const __PASSDB__ = process.env.PASS_DATABASE;
 
 const mongoose = require("mongoose");
-const uri = `mongodb+srv://piyawatbackup:${__PASSDB__}@cluster0.nxfb6yd.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://piyawatport:${__PASSDB__}@posyayeedemo.ykzicws.mongodb.net/?retryWrites=true&w=majority`;
 
 function connect_db_mongodb() {
   mongoose.connect(uri,{
@@ -26,4 +26,3 @@ function connect_db_mongodb() {
   })
 }
 module.exports = connect_db_mongodb;
-

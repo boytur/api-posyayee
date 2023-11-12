@@ -26,7 +26,6 @@ const sale = require('./routes/sale_route');
 const dailysale = require('./routes/view_dailysale');
 const add_product_quantity = require('./routes/add_product_quantity');
 
-
 //get routes
 app.get('/', (_req, res, _next) => {
   res.send('Response form Home เด๊อจ่ะ');
@@ -52,7 +51,6 @@ app.get('/view-dailysale',dailysale);
 //Route add product quantity
 app.post('/add-product-quantity',add_product_quantity);
 
-
 //Cnnect database
 __DATABASE__();
 
@@ -65,5 +63,9 @@ const cron = require('node-cron');
 // สร้าง cron job เพื่อตรวจสอบทุกวันที่ 20:00
 cron.schedule('0 20 * * *', () => {
   console.log('Cron job is running...');
-  lineNotify(); // เรียกฟังก์ชันส่ง Line Notify ที่คุณสร้าง
+  lineNotify();
+}, {
+  timeZone: 'Asia/Bangkok' // กำหนด timezone เป็น Asia/Bangkok
 });
+
+console.log("Server time",new Date().toLocaleString());
