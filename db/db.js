@@ -20,6 +20,11 @@ function connect_db_mongodb() {
   })
   .then(()=>{
     console.log("Connected database !");
+    console.log(`
+      ∧, , , ∧
+     ( ̳• · •)
+    /    づ♡ I love you 
+    `)
   })
   .catch ((err)=>{
     console.log(err);

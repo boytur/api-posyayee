@@ -9,11 +9,31 @@
     ซัพพอร์ตแค่ Object
 */
 
+const express = require('express');
 const { ObjectId } = require('mongodb');
 const EditProduct = require("../schema/add_product_schema");
+const multer = require('multer');
+const path = require('path');
+const app = express();
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + Date.now() + ext);
+  }
+});
+
+const upload = multer({ storage: storage });
+app.use(express.static('uploads'));
 
 exports.edit_product = async (req, res) => {
-  const { _id, name, image, price, volume } = req.body;
+  const { _id, name, price, volume } = req.body;
+  const fileName = req.file ? req.file.filename : null;
+  console.table({ name, fileName , name , price , volume});  
 
   //validate ข้อมูลก่อนส่งแก้ไข
   switch (true) {
@@ -41,14 +61,13 @@ exports.edit_product = async (req, res) => {
       error: "สินค้าชื่อนี้มีอยู่ในคลังแล้ว",
     });
   } else {
-
     //ถ้าไม่ให้บันทึกข้อมูลลง database
     try {
       const updatedProduct = await EditProduct.updateOne(
         {_id:new ObjectId(_id)}, //แปลง id_ ที่รับมาให้เป็น Objet
         {
           name: name,
-          image: image,
+          image: fileName,
           price: price,
           volume: volume,
         },

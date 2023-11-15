@@ -1,18 +1,27 @@
-**หลักการทำงาน** 
+# POSYAYEE API 
 
-req => routes => controllers => res => data
-![Alt text](image.png)
+#### หลักการทำงาน
+![Image](./image//APIFlow.jpg)
 
+```
+ git clone https://github.com/boytur/POSYAYEE-API.git
+```
+```
+ cd POSYAYEE-API
+```
+```
+ npm install
+```
+#### Add .env file 
+```
+PORT = YOUR_PORT
+PASS_DATABASE = YOUR_MONGODB_PASS_DATABASE
+JWT_SECRET = YOUR_JWT_SECRET
+TOKEN = YOUR_LINE_NOTIFY_TOKEN
+```
+```
+ mkdir uploads
+```
 
-** Update make register **
-- route register
-- user model
-- generate auth pin
-- save data in database
-
-![image](https://github.com/boytur/POS-YAYEE-API/assets/104257779/4b10a293-8494-4e45-8275-8aa063a752f0)
-![image](https://github.com/boytur/POS-YAYEE-API/assets/104257779/df027bc8-b3d2-43eb-9bac-6d580d923d23)
-
-
-
- 
+#### อัพเดตครั้งที่ 1
+ - เปลี่ยนวิธีเก็บข้อมูลจากลิงก์เป็นอัพโหลดเก็บที่ server และเก็บ path เข้า db เนื่องจากพอเก็บเป็นลิงก์ลง db แล้วความเร็วการดึง API ช้ามากและ db บวม
