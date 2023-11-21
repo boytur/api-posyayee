@@ -1,4 +1,5 @@
 const daily_shema = require("../schema/daily_sales_shema");
+const credit_sale = require("../schema/sale_credit_schema");
 const { format, subDays } = require("date-fns");
 
 exports.con_dailysale = async (req, res) => {
@@ -38,9 +39,18 @@ exports.con_dailysale = async (req, res) => {
       totalSalesLast30Days += salesAmount;
     }
 
+    //สร้างตัวแปรเพื่อเก็บยอดขายแบบเครดิต
+    let creditSaleToday = 0;
+    // จัดรูปวันที่ให้อยู่ในรูปแบบของฐานข้อมูล
+    const formattedDateForDB = format(subDays(currentDate, 0), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    const creditSale = await credit_sale.find({ date: formattedDateForDB });
+    const allCredtSale = creditSale[0] ? creditSale[0].salesAmount : 0;
+
     // เพิ่มยอดขายรวม 7,30 วันในออบเจ็กต์
     salesDataLast7Days.totalSalesLast30Days = totalSalesLast30Days;
     salesDataLast7Days.totalSalesLast7Days = totalSalesLast7Days;
+    salesDataLast7Days.creditSale = allCredtSale;
+
     // ส่งออบเจ็กต์ที่มีข้อมูลยอดขายในแต่ละวันและยอดขายรวม 30 วันกลับให้แอพพลิเคชัน
     res.json(salesDataLast7Days);
   } catch (error) {

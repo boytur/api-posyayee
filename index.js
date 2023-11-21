@@ -32,6 +32,8 @@ const login_route = require('./routes/login_route');
 const sale = require('./routes/sale_route');
 const dailysale = require('./routes/view_dailysale');
 const add_product_quantity = require('./routes/add_product_quantity');
+const sale_credit = require('./routes/sale_credit');
+
 //get routes
 app.get('/', (_req, res, _next) => {
   res.send('Response form Home เด๊อจ่ะ');
@@ -56,7 +58,8 @@ app.post('/sale', sale);
 app.get('/view-dailysale', dailysale);
 //Route add product quantity
 app.post('/add-product-quantity', add_product_quantity);
-
+//Route sale by credit
+app.post('/sale-credit', sale_credit);
 
 //กำหนดให้เข้าถึงไฟล์รูปภาพได้
 app.use('/uploads', express.static('uploads'));
