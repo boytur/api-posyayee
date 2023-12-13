@@ -20,7 +20,7 @@
     "joi": "^17.11.0",
     "joi-password-complexity": "^5.2.0",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.1.0",
+    "mongodb": "^6.3.0",
     "mongoose": "^7.6.0",
     "morgan": "^1.10.0",
     "node": "^20.7.0",
