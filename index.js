@@ -33,33 +33,35 @@ const sale = require('./routes/sale_route');
 const dailysale = require('./routes/view_dailysale');
 const add_product_quantity = require('./routes/add_product_quantity');
 const sale_credit = require('./routes/sale_credit');
+const auth = require('./auth/authen');
 
 //get routes
-app.get('/', (_req, res, _next) => {
+app.get('/', auth.isLogin, async(_req, res, next) => {
   res.send('Response form Home เด๊อจ่ะ');
-})
+});
+
 //Route view product
-app.get('/view-product', view_product);
+app.get('/view-product',auth.isLogin, view_product);
 //Route add product
-app.post('/add-product', add_new_product)
+app.post('/add-product',auth.isLogin, add_new_product)
 //Route view product outstock
-app.get('/view-outstock-product', view_outstock_product);
+app.get('/view-outstock-product',auth.isLogin, view_outstock_product);
 //Route edit product
-app.post('/edit-product', edit_product)
+app.post('/edit-product',auth.isLogin, edit_product)
 //Route delete product และส่ง para เป็น _id
-app.delete('/delete-product/:_id', delete_product);
+app.delete('/delete-product/:_id',auth.isLogin, delete_product);
 //Route register
-app.post('/register', register);
+app.post('/register',register);
 //Route login
 app.post('/login', login_route);
 //Route sale
-app.post('/sale', sale);
+app.post('/sale',auth.isLogin, sale);
 //Route dailysale
-app.get('/view-dailysale', dailysale);
+app.get('/view-dailysale',auth.isLogin, dailysale);
 //Route add product quantity
-app.post('/add-product-quantity', add_product_quantity);
+app.post('/add-product-quantity',auth.isLogin, add_product_quantity);
 //Route sale by credit
-app.post('/sale-credit', sale_credit);
+app.post('/sale-credit',auth.isLogin, sale_credit);
 
 //กำหนดให้เข้าถึงไฟล์รูปภาพได้
 app.use('/uploads', express.static('uploads'));

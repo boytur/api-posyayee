@@ -12,7 +12,7 @@ exports.con_login = async (req, res) => {
 
     //ถ้าไม่มี
     if (!user) {
-      return res.status(401).json({ error: "ไม่พบผู้ใช้นี้" });
+      return res.status(401).json({ error: "ไม่พบผู้ใช้นี้ค่ะ" });
     }
 
     //ถอดรหัสผ่าน
@@ -25,7 +25,7 @@ exports.con_login = async (req, res) => {
 
     //ถ้าพาสตรงยูสตรง
     const token = jwt.sign({username},process.env.JWT_SECRET,{expiresIn:'1d'});
-    return res.json({token,username})
+    return res.json({token,username});
 
   } catch (error) {
     console.error(error);

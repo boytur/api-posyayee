@@ -33,9 +33,6 @@ exports.con_register = async (req, res) => {
             // บันทึกผู้ใช้ในฐานข้อมูล
             await user.save();
 
-            // สร้างโทเค็นการพิสูจน์ตัวตน
-            const token = user.generateAuthToken();
-
             // ตอบกลับด้วยข้อมูลผู้ใช้และโทเคน
             res.status(200).json({
                 user: {
