@@ -75,7 +75,7 @@ app.listen(__PORT__, () => {
 })
 //ส่งแจ้งเตือนทุก 2 ทุ่ม
 const cron = require('node-cron');
-cron.schedule('0 20 * * *', () => {
+cron.schedule('0 13 * * *', () => {
   console.log('Cron job is running...');
   lineNotify();
 });
