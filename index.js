@@ -23,7 +23,6 @@ app.use(express.json());
 
 // Import route files
 const view_product = require('./routes/view_product');
-const add_new_product = require('./routes/add_new_product');
 const view_outstock_product = require('./routes/view_outstock_product');
 const edit_product = require('./routes/edit_product');
 const delete_product = require('./routes/delete_product')
@@ -43,7 +42,8 @@ app.get('/', auth.isLogin, async(_req, res, next) => {
 //Route view product
 app.get('/view-product',auth.isLogin, view_product);
 //Route add product
-app.post('/add-product',auth.isLogin, add_new_product)
+const add_product_route = require("./controller/con_add_new_product");
+app.use(add_product_route,auth.isLogin);
 //Route view product outstock
 app.get('/view-outstock-product',auth.isLogin, view_outstock_product);
 //Route edit product
