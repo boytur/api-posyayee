@@ -1,87 +1,148 @@
 const express = require('express');
 const AddProduct = require("../schema/add_product_schema");
-const multer = require('multer');
-const path = require('path');
 const app = express();
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + Date.now() + ext);
-  }
-});
-
+const multer = require("multer");
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-app.use(express.static('uploads'));
+const b2 = require("../services/b2");
 
-exports.add_new_product = async (req, res) => {
-  const { name, price, volume, barcode } = req.body;
-  const fileName = req.file ? req.file.filename : null;
-  console.table({ name, fileName });  
+app.post('/add-product', upload.single('image'), async (req, res) => {
 
-  // validate ข้อมูลก่อนบันทึกลงฐานข้อมูล
-  switch (true) {
-    case !name:
-      return res.status(400).json({
-        error: "กรุณาใส่ชื่อสินค้า",
+  /* Generate file name */
+  let fileName = generateFileName();
+  let imageURLs = "";
+  if (!req.file) {
+    imageURLs = "https://placehold.co/600x400/EEE/31343C"
+  }
+  else {
+    imageURLs = `https://f005.backblazeb2.com/file/posyayee/${fileName}`
+  }
+  
+  /* FUCNTION B2 upload images */
+  async function GetBucket() {
+    try {
+      await b2.authorize();
+      let response = await b2.getBucket({ bucketName: 'posyayee' });
+      // console.log(response);
+      b2.getUploadUrl({
+        bucketId: process.env.BUCKET_ID,
+      }).then((uploadUrlResponse) => {
+        // console.log("getUploadUrl", uploadUrlResponse.data.uploadUrl, uploadUrlResponse.data.authorizationToken);
+        const fileBuffer = req.file.buffer;
+        if (!fileBuffer) {
+          throw new Error('File buffer is undefined.');
+        }
+        b2.uploadFile({
+          uploadUrl: uploadUrlResponse.data.uploadUrl,
+          uploadAuthToken: uploadUrlResponse.data.authorizationToken,
+          fileName: fileName,
+          data: fileBuffer,
+          onUploadProgress: null,
+        }).then((uploadFileResponse) => {
+          // console.log('uploadFile', uploadFileResponse);
+          console.log("publicUrl", imageURLs);
+        });
       });
-      break;
-    case !price:
-      return res.status(400).json({
-        error: "กรุณาใส่ราคาสินค้า",
-      });
-      break;
+    } catch (err) {
+      console.log('Error getting bucket:', err);
+      res.status(500).send({
+        result: false,
+        msg: "Error getting bucket"
+      })
+    }
   }
 
-  try {
-    // สร้าง object สินค้าใหม่จาก schema
-    const newProduct = new AddProduct({
-      name: name,
-      image: fileName, // เก็บเฉพาะชื่อไฟล์
-      price: price,
-      volume: volume,
-      barcode: barcode,
-    });
+  /* FUCNTION generate name */
+  function generateFileName() {
+    return `img` + Date.now();
+  }
 
-    // ตรวจสอบว่ามีสินค้าที่มีชื่อเดียวกันอยู่แล้วหรือไม่
-    const existingProduct = await AddProduct.findOne({ name: name });
-
-    if (existingProduct) {
-      return res.status(400).json({
-        error: "สินค้าชื่อนี้มีอยู่แล้ว",
-      });
-    }
-
-    // ถ้ามีการระบุบาร์โค้ด ตรวจสอบว่าไม่ซ้ำ
-    if (barcode !== '') {
-      const existingBarcodeProduct = await AddProduct.findOne({
+  /* FUCNTION Add product in database */
+  addNewProductFucn = async () => {
+    try {
+      // validate data
+      const { name, price, volume, barcode } = req.body;
+      switch (true) {
+        case !name:
+          return res.status(400).json({
+            error: "กรุณาใส่ชื่อสินค้าค่ะ",
+          });
+        case !price:
+          return res.status(400).json({
+            error: "กรุณาใส่ราคาสินค้าค่ะ",
+          });
+      }
+      // create new object form schema
+      const newProduct = new AddProduct({
+        name: name,
+        image: `${imageURLs}`,
+        price: price,
+        volume: volume,
         barcode: barcode,
       });
-      if (existingBarcodeProduct) {
+
+      // Check existing product
+      const existingProduct = await AddProduct.findOne({ name: name });
+
+      if (existingProduct) {
         return res.status(400).json({
-          error: "สินค้าบาร์โค้ดนี้มีอยู่แล้ว",
+          error: "สินค้าชื่อนี้มีอยู่แล้ว",
         });
       }
-    }
 
-    if (volume === null || parseInt(volume) <= 0) {
-      volume = null;
-      return res.status(400).json({
-        error: "กรุณาใส่จำนวนที่ถูกต้อง",
+      // If product has barcode, verify existing product
+      if (barcode !== '') {
+        const existingBarcodeProduct = await AddProduct.findOne({
+          barcode: barcode,
+        });
+        if (existingBarcodeProduct) {
+          return res.status(400).json({
+            error: "สินค้าบาร์โค้ดนี้มีอยู่แล้ว",
+          });
+        }
+      }
+      
+      if (volume === null || parseInt(volume) <= 0) {
+        volume = null;
+        return res.status(400).json({
+          error: "กรุณาใส่จำนวนที่ถูกต้อง",
+        });
+      }
+
+      // Create a new product in database
+      const savedProduct = await newProduct.save();
+      res.status(201).json({
+        message: `${name} ถูกเพิ่มแล้วค่ะ`,
+        productId: savedProduct._id,
       });
+      console.log(savedProduct);
     }
-
-    // บันทึกสินค้าลงฐานข้อมูล
-    const savedProduct = await newProduct.save();
-    res.status(201).json({ message: `${name} ถูกเพิ่มแล้ว`, productId: savedProduct._id });
-  } catch (error) {
-    // ตรวจสอบ error และจัดการตามนั้น
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({ error: "ข้อมูลไม่ถูกต้อง", details: error.message });
+    catch (err) {
+      console.log(err)
     }
-    res.status(500).json({ error: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์กรุณาลองใหม่อีกครั้ง" });
   }
-};
+
+  /* Used function */
+
+  //If image file undefined
+  try {
+    if (!req.file) {
+      console.log("image not found!")
+      addNewProductFucn();
+    }
+    //If image file not undefined
+    else {
+      await GetBucket();
+      await addNewProductFucn();
+    }
+  }
+  catch (err) {
+    res.status(500).send({
+      success:false,
+      msg:"เกิดข้อผิดพลาดบางอย่างกรุณาองใหม่อีกครั้งค่ะ!"
+    })
+    console.log("Err", err);
+  }
+});
+module.exports = app;
