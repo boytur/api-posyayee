@@ -40,7 +40,6 @@ exports.con_register = async (req, res) => {
                     username: user.username,
                     email: user.email
                 },
-                token: token
             });
         });
     } catch (error) {

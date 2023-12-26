@@ -1,148 +1,114 @@
 const express = require('express');
-const AddProduct = require("../schema/add_product_schema");
+const AddProduct = require('../schema/add_product_schema');
 const app = express();
 
-const multer = require("multer");
+const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-const b2 = require("../services/b2");
+const b2 = require('../services/b2');
 
 app.post('/add-product', upload.single('image'), async (req, res) => {
+  try {
+    const fileName = generateFileName();
+    const imageURLs = req.file ? `${process.env.URL}${fileName}` : 'https://placehold.co/600x400/EEE/31343C';
 
-  /* Generate file name */
-  let fileName = generateFileName();
-  let imageURLs = "";
-  if (!req.file) {
-    imageURLs = "https://placehold.co/600x400/EEE/31343C"
-  }
-  else {
-    imageURLs = `https://f005.backblazeb2.com/file/posyayee/${fileName}`
-  }
-  
-  /* FUCNTION B2 upload images */
-  async function GetBucket() {
-    try {
-      await b2.authorize();
-      let response = await b2.getBucket({ bucketName: 'posyayee' });
-      // console.log(response);
-      b2.getUploadUrl({
-        bucketId: process.env.BUCKET_ID,
-      }).then((uploadUrlResponse) => {
-        // console.log("getUploadUrl", uploadUrlResponse.data.uploadUrl, uploadUrlResponse.data.authorizationToken);
-        const fileBuffer = req.file.buffer;
-        if (!fileBuffer) {
-          throw new Error('File buffer is undefined.');
-        }
-        b2.uploadFile({
-          uploadUrl: uploadUrlResponse.data.uploadUrl,
-          uploadAuthToken: uploadUrlResponse.data.authorizationToken,
-          fileName: fileName,
-          data: fileBuffer,
-          onUploadProgress: null,
-        }).then((uploadFileResponse) => {
-          // console.log('uploadFile', uploadFileResponse);
-          console.log("publicUrl", imageURLs);
-        });
-      });
-    } catch (err) {
-      console.log('Error getting bucket:', err);
-      res.status(500).send({
-        result: false,
-        msg: "Error getting bucket"
-      })
+    await addNewProduct(req.body, imageURLs, res, req);
+
+    if (!req.file) {
+      console.log('Image not found!');
+    } else {
+      await uploadToB2(req.file.buffer, fileName, res);
     }
-  }
 
-  /* FUCNTION generate name */
-  function generateFileName() {
-    return `img` + Date.now();
+  } catch (err) {
+    console.log('Error:', err);
+    res.status(500).send({
+      success: false,
+      msg: 'เกิดข้อผิดพลาดบางอย่าง กรุณาลองใหม่อีกครั้งค่ะ!'
+    });
   }
+});
 
-  /* FUCNTION Add product in database */
-  addNewProductFucn = async () => {
-    try {
-      // validate data
-      const { name, price, volume, barcode } = req.body;
-      switch (true) {
-        case !name:
-          return res.status(400).json({
-            error: "กรุณาใส่ชื่อสินค้าค่ะ",
-          });
-        case !price:
-          return res.status(400).json({
-            error: "กรุณาใส่ราคาสินค้าค่ะ",
-          });
-      }
-      // create new object form schema
-      const newProduct = new AddProduct({
-        name: name,
-        image: `${imageURLs}`,
-        price: price,
-        volume: volume,
+function generateFileName() {
+  return `img${Date.now()}`;
+}
+
+async function addNewProduct(productData, imageURLs, res, req) {
+  try {
+    const { name, price, volume, barcode } = productData;
+
+    if (!name || !price) {
+      return res.status(400).json({
+        error: 'กรุณาใส่ชื่อและราคาสินค้าค่ะ!',
+      });
+    }
+
+    const newProduct = new AddProduct({
+      name: name,
+      image: imageURLs,
+      price: price,
+      volume: volume,
+      barcode: barcode
+    });
+
+    const existingProduct = await AddProduct.findOne({ name: name });
+
+    if (existingProduct) {
+      return res.status(400).json({
+        error: 'สินค้าชื่อนี้มีอยู่แล้วค่ะ!',
+      });
+    }
+
+    if (barcode !== '') {
+      const existingBarcodeProduct = await AddProduct.findOne({
         barcode: barcode,
       });
 
-      // Check existing product
-      const existingProduct = await AddProduct.findOne({ name: name });
-
-      if (existingProduct) {
+      if (existingBarcodeProduct) {
         return res.status(400).json({
-          error: "สินค้าชื่อนี้มีอยู่แล้ว",
+          error: 'สินค้าบาร์โค้ดนี้มีอยู่แล้ว',
         });
       }
-
-      // If product has barcode, verify existing product
-      if (barcode !== '') {
-        const existingBarcodeProduct = await AddProduct.findOne({
-          barcode: barcode,
-        });
-        if (existingBarcodeProduct) {
-          return res.status(400).json({
-            error: "สินค้าบาร์โค้ดนี้มีอยู่แล้ว",
-          });
-        }
-      }
-      
-      if (volume === null || parseInt(volume) <= 0) {
-        volume = null;
-        return res.status(400).json({
-          error: "กรุณาใส่จำนวนที่ถูกต้อง",
-        });
-      }
-
-      // Create a new product in database
-      const savedProduct = await newProduct.save();
-      res.status(201).json({
-        message: `${name} ถูกเพิ่มแล้วค่ะ`,
-        productId: savedProduct._id,
-      });
-      console.log(savedProduct);
     }
-    catch (err) {
-      console.log(err)
-    }
+
+    const savedProduct = await newProduct.save();
+    console.log('Product added successfully:', savedProduct);
+
+    // ทำการ response ก่อนที่จะทำ uploadToB2
+    res.status(201).json({
+      success:true,
+      message: `${name} ถูกเพิ่มแล้วค่ะ`
+    });
+
+  } catch (err) {
+    console.log('Error adding new product:', err);
+    throw err;
   }
+}
 
-  /* Used function */
-
-  //If image file undefined
+async function uploadToB2(fileBuffer, fileName) {
   try {
-    if (!req.file) {
-      console.log("image not found!")
-      addNewProductFucn();
+    await b2.authorize();
+    const response = await b2.getBucket({ bucketName: `${process.env.BUCKET}` });
+    const uploadUrlResponse = await b2.getUploadUrl({ bucketId: process.env.BUCKET_ID });
+
+    if (!fileBuffer) {
+      throw new Error('File buffer is undefined.');
     }
-    //If image file not undefined
-    else {
-      await GetBucket();
-      await addNewProductFucn();
-    }
+
+    const upload = await b2.uploadFile({
+      uploadUrl: uploadUrlResponse.data.uploadUrl,
+      uploadAuthToken: uploadUrlResponse.data.authorizationToken,
+      fileName: fileName,
+      data: fileBuffer,
+      onUploadProgress: null,
+    });
+
+    console.log(`${fileName} uploaded successfully with status`,upload.status);
+  } catch (err) {
+    console.log('Error uploading to B2:', err);
+    throw err;
   }
-  catch (err) {
-    res.status(500).send({
-      success:false,
-      msg:"เกิดข้อผิดพลาดบางอย่างกรุณาองใหม่อีกครั้งค่ะ!"
-    })
-    console.log("Err", err);
-  }
-});
+}
+
 module.exports = app;
