@@ -24,7 +24,6 @@ app.use(express.json());
 // Import route files
 const view_product = require('./routes/view_product');
 const view_outstock_product = require('./routes/view_outstock_product');
-const edit_product = require('./routes/edit_product');
 const delete_product = require('./routes/delete_product')
 const register = require('./routes/register_route');
 const login_route = require('./routes/login_route');
@@ -51,7 +50,8 @@ app.use(con_add_new_product, auth.isLogin);
 //Route view product outstock
 app.get('/view-outstock-product', auth.isLogin, view_outstock_product);
 //Route edit product
-app.post('/edit-product', auth.isLogin, edit_product)
+const edit_product = require("./controller/con_edit_product");
+app.use(edit_product, auth.isLogin);
 //Route delete product และส่ง para เป็น _id
 app.delete('/delete-product/:_id', auth.isLogin, delete_product);
 //Route sale
