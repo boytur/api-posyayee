@@ -7,7 +7,7 @@ const b2 = new B2({
 /** Delete file */
 async function deleteFileB2(fileName) {
     try {
-        if (!fileName) {
+        if (!fileName || fileName === "https://placehold.co/600x400/EEE/31343C" || !fileName.startsWith("https://f005.backblazeb2.com/file/posyayee/")) {
             console.log('File name is undefined or null.');
             return;
         }
@@ -25,7 +25,7 @@ async function deleteFileB2(fileName) {
         });
 
         if (listFilesResponse.data.files.length === 0) {
-            console.log(`File ${fileName} not found in B2.`);
+            console.log(`File ${fileName} not found in B2. It might have already been deleted.`);
             return;
         }
 
