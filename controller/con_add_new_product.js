@@ -5,7 +5,7 @@ const app = express();
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-const b2 = require('../services/b2');
+const uploadToB2 = require('../middleware/b2');
 
 app.post('/add-product', upload.single('image'), async (req, res) => {
   try {
@@ -72,11 +72,9 @@ async function addNewProduct(productData, imageURLs, res, req) {
     }
 
     const savedProduct = await newProduct.save();
-    console.log('Product added successfully:', savedProduct);
-
     // ทำการ response ก่อนที่จะทำ uploadToB2
     res.status(201).json({
-      success:true,
+      success: true,
       message: `${name} ถูกเพิ่มแล้วค่ะ`
     });
 
@@ -85,30 +83,4 @@ async function addNewProduct(productData, imageURLs, res, req) {
     throw err;
   }
 }
-
-async function uploadToB2(fileBuffer, fileName) {
-  try {
-    await b2.authorize();
-    const response = await b2.getBucket({ bucketName: `${process.env.BUCKET}` });
-    const uploadUrlResponse = await b2.getUploadUrl({ bucketId: process.env.BUCKET_ID });
-
-    if (!fileBuffer) {
-      throw new Error('File buffer is undefined.');
-    }
-
-    const upload = await b2.uploadFile({
-      uploadUrl: uploadUrlResponse.data.uploadUrl,
-      uploadAuthToken: uploadUrlResponse.data.authorizationToken,
-      fileName: fileName,
-      data: fileBuffer,
-      onUploadProgress: null,
-    });
-
-    console.log(`${fileName} uploaded successfully with status`,upload.status);
-  } catch (err) {
-    console.log('Error uploading to B2:', err);
-    throw err;
-  }
-}
-
 module.exports = app;
