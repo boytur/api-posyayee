@@ -1,4 +1,4 @@
-const Product = require('../schema/add_product_schema');
+const Product = require('../schema/product_schema');
 const DailySale = require('../schema/daily_sales_shema');
 
 exports.con_sale = async (req, res) => {

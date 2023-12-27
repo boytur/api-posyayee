@@ -11,7 +11,7 @@
 
 const express = require('express');
 const { ObjectId } = require('mongodb');
-const EditProduct = require("../schema/add_product_schema");
+const EditProduct = require("../schema/product_schema");
 const multer = require('multer');
 const path = require('path');
 const app = express();

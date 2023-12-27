@@ -17,7 +17,7 @@ currentDate.setUTCHours(0, 0, 0, 0);
 //ส่วนของยอดขขายที่เป็นเครดิต
 const credit_shema = require('../schema/sale_credit_schema');
 // ส่วนของของใกล้จะหมด
-const product_structure = require("../schema/add_product_schema");
+const product_structure = require("../schema/product_schema");
 lineNotify = async function () {
     try {
          //ส่วนของยอดขาย

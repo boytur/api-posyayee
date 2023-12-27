@@ -1,4 +1,4 @@
-const Product = require('../schema/add_product_schema');
+const Product = require('../schema/product_schema');
 const CreditSale = require('../schema/sale_credit_schema');
 
 exports.con_sale_credit = async (req, res) => {

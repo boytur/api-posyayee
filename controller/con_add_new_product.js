@@ -1,11 +1,11 @@
 const express = require('express');
-const AddProduct = require('../schema/add_product_schema');
+const AddProduct = require('../schema/product_schema');
 const app = express();
 
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-const uploadToB2 = require('../middleware/b2');
+const uploadToB2 = require('../middleware/uploadB2');
 
 app.post('/add-product', upload.single('image'), async (req, res) => {
   try {

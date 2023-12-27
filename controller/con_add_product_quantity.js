@@ -1,4 +1,4 @@
-const productShema = require('../schema/add_product_schema');
+const productShema = require('../schema/product_schema');
 
 exports.add_product_quantity = async (req, res) => {
     try {

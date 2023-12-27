@@ -5,7 +5,7 @@
   DATE : 27/กันยายน/2023
   OWNER : piyawat W. 
  */
-const AddProduct = require("../schema/add_product_schema");
+const AddProduct = require("../schema/product_schema");
 exports.view_product = async (req, res) => {
   try {
     // Query the database to retrieve products without a barcode

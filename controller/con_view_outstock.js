@@ -6,7 +6,7 @@
   OWNER : piyawat W. 
 */
 
-const product_structure = require("../schema/add_product_schema");
+const product_structure = require("../schema/product_schema");
 
 exports.view_outstock_product = async (req, res) => {
   try {
