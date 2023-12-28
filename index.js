@@ -9,12 +9,12 @@ const bodyParser = require('body-parser');
 const lineNotify = require('./notify/notify');
 
 //middleware
-app.use(morgan('dev'));
+app.use(morgan('combined'));
 app.use(bodyParser.json()); //เก็บข้อมูลจาก body
 
 // ตั้งค่า CORS
 const corsOptions = {
-  origin: '*',
+  origin: 'https://sale.posyayee.shop',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // ให้เปิดโอกาสให้ทำงานกับ cookies และ credentials
 };
