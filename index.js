@@ -7,10 +7,12 @@ const __PORT__ = process.env.PORT;
 const __DATABASE__ = require('./db/db');
 const bodyParser = require('body-parser');
 const lineNotify = require('./notify/notify');
+const helmet = require('helmet')
 
 //middleware
 app.use(morgan('combined'));
 app.use(bodyParser.json()); //เก็บข้อมูลจาก body
+app.use(helmet());
 
 // ตั้งค่า CORS
 const corsOptions = {
