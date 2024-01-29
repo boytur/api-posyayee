@@ -8,11 +8,13 @@ const __DATABASE__ = require('./db/db');
 const bodyParser = require('body-parser');
 const lineNotify = require('./notify/notify');
 const helmet = require('helmet')
+const cookieParser = require('cookie-parser');
 
 //middleware
 app.use(morgan('combined'));
 app.use(bodyParser.json()); //เก็บข้อมูลจาก body
 app.use(helmet());
+app.use(cookieParser());
 
 // ตั้งค่า CORS
 const corsOptions = {
@@ -64,6 +66,10 @@ app.get('/view-dailysale', auth.isLogin, dailysale);
 app.post('/add-product-quantity', auth.isLogin, add_product_quantity);
 //Route sale by credit
 app.post('/sale-credit', auth.isLogin, sale_credit);
+
+/* New update */
+const refreshToken = require('./auth/refresh');
+app.use(refreshToken);
 
 //กำหนดให้เข้าถึงไฟล์รูปภาพได้
 app.use('/uploads', express.static('uploads'));
