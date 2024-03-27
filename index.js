@@ -16,7 +16,7 @@ app.use(helmet());
 
 // ตั้งค่า CORS
 const corsOptions = {
-  origin: ['https://sale.posyayee.shop','demo-posyayee-v1.netlify.app'],
+  origin: ['https://sale.posyayee.shop','https://demo-posyayee-v1.netlify.app'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // ให้เปิดโอกาสให้ทำงานกับ cookies และ credentials
 };
