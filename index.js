@@ -7,12 +7,14 @@ const __PORT__ = process.env.PORT;
 const __DATABASE__ = require('./db/db');
 const bodyParser = require('body-parser');
 const lineNotify = require('./notify/notify');
-const helmet = require('helmet')
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
 
 //middleware
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 app.use(bodyParser.json()); //เก็บข้อมูลจาก body
 app.use(helmet());
+app.use(cookieParser());
 
 // ตั้งค่า CORS
 const corsOptions = {
@@ -34,6 +36,7 @@ const dailysale = require('./routes/view_dailysale');
 const add_product_quantity = require('./routes/add_product_quantity');
 const sale_credit = require('./routes/sale_credit');
 const auth = require('./auth/authen');
+const refresh = require('./auth/con_refresh');
 
 //get routes
 app.get('/', auth.isLogin, async (_req, res, next) => {
@@ -48,7 +51,11 @@ app.post('/login', login_route);
 app.get('/view-product', auth.isLogin, view_product);
 //Route add product
 const con_add_new_product = require("./controller/con_add_new_product");
-app.use(con_add_new_product, auth.isLogin);
+app.use(con_add_new_product);
+
+//refresh
+app.use(refresh);
+
 //Route view product outstock
 app.get('/view-outstock-product', auth.isLogin, view_outstock_product);
 //Route edit product

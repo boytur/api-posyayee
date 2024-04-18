@@ -1,16 +1,16 @@
 module.exports = {
     isLogin: (req, res, next) => {
         const jwt = require('jsonwebtoken');
-        const authorizationHeader = req.headers.authorization;
+        const authorizationHeader = req.cookies.refresh_token;
 
-        if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+        if (!authorizationHeader) {
             return res.status(401).send({
                 success: false,
                 msg: "Access denied! Authorization header missing or invalid format."
             });
         }
 
-        const token = authorizationHeader.replace('Bearer ', '');
+        const token = authorizationHeader;
         const secret = process.env.JWT_SECRET;
 
         try {
