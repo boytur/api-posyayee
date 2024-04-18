@@ -18,7 +18,7 @@ app.use(cookieParser());
 
 // ตั้งค่า CORS
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: ['https://sale.posyayee.shop','https://demo-posyayee-v1.netlify.app'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // ให้เปิดโอกาสให้ทำงานกับ cookies และ credentials
 };
