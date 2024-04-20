@@ -1,7 +1,7 @@
 module.exports = {
     isLogin: (req, res, next) => {
         const jwt = require('jsonwebtoken');
-        const authorizationHeader = req.cookies.refresh_token;
+        const authorizationHeader = req.cookies.access_token;
 
         if (!authorizationHeader) {
             return res.status(401).send({
