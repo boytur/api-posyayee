@@ -11,14 +11,14 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 
 //middleware
-app.use(morgan('dev'));
+app.use(morgan('combined'));
 app.use(bodyParser.json()); //เก็บข้อมูลจาก body
 app.use(helmet());
 app.use(cookieParser());
 
 // ตั้งค่า CORS
 const corsOptions = {
-  origin: ['https://sale.posyayee.shop','https://demo-posyayee-v1.netlify.app'],
+  origin: ['https://salev1.posyayee.shop','https://demo-posyayee-v1.netlify.app'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // ให้เปิดโอกาสให้ทำงานกับ cookies และ credentials
 };
